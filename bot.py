@@ -37,12 +37,7 @@ def notation(name, phone):   # запис телефону в словникa
     record.add_phone(phone)
     book.add_record(record)
     return f'You have added a contact'
-    # if book.find(name):
-    #     raise ValueError('The contact is already in the notebook')
-    # record = Record(name, phone)
-    # book.add_record(record)
-    # return f'You have added a contact {name}'
-
+        
 @input_error
 def changes(name, old_phone, new_phone):  # зміна номеру мобільного для вказаного імені
     record = book.data.get(name)
@@ -53,11 +48,6 @@ def changes(name, old_phone, new_phone):  # зміна номеру мобіль
             phone.value = new_phone
             return f'You have changed the {name} contact phone number'
     return f'No {old_phone} in the notebook'
-    # record = book.find(name)
-    # if not record:
-    #     raise KeyError(f'No contact {name} in the notebook')
-    # record.phones = [Phone(phone)]
-    # return f'You have changed the {name} contact phone number'
 
 @input_error
 def show_phone(name): # вивід номеру телефону по запиту
@@ -66,26 +56,6 @@ def show_phone(name): # вивід номеру телефону по запит
         phones = [phone.value for phone in record.phones]
         return phones
     return 'No contact in the notebook'
-    # if not record:
-    #     raise KeyError(f'No contact {name} in the notebook')
-    # result = f"Phone number is {record.phones[name]} for {name}" 
-    # return result
-
-# @input_error
-# def contact_bday(name, birthday):
-#     record = book.data.get(name)
-#     if not record:
-#         return 'No contact'
-#     try:
-#         #print("Received birthday string:", birthday)
-#         bday = birthday.strftime('%Y-%m-%d')
-#         bday_date = datetime.strptime(bday, '%Y-%m-%d').date()
-#         record.contact_bday(Birthday(bday_date))
-#         # con_bday = Birthday(bday_date)
-#         # record.contact_bday(con_bday)
-#         return 'Bitrhday added successfully'
-#     except ValueError:
-#         return 'Incorrect format, should be YYYY-MM-DD'
 
 @input_error
 def show_all():  # вивід всього змісту записника
@@ -99,21 +69,8 @@ def show_all():  # вивід всього змісту записника
         result += f'{name}: {phones_to_str}\n'
     return result 
 
-    #    phones_to_str = ', '.join(phones)
-    #     info_of_bday = ''
-    #     if record.birthday:
-    #         days_to_bday = record.days_to_birthday()
-    #         if days_to_bday == 0:
-    #             info_of_bday = 'Birthday is today'
-    #         elif days_to_bday > 0:
-    #             info_of_bday = f'{days_to_bday} days to birthday'
-    #         else:
-    #             info_of_bday = 'The birthday has already passed'
-    #     result += f'{name}: {phones_to_str}; {info_of_bday}\n'
-    # return result
-
 @input_error
-def searching(some_info):
+def searching(some_info): # пошук по імені або телефону
     contacts = []
     for record in book.data.values():
         name = record.name.value
@@ -130,16 +87,11 @@ def searching(some_info):
     return result
 
 @input_error
-def closing():
+def closing(): # закриття програми
     print('Good bye!')
     sys.exit()
 
-# Вся логіка взаємодії з користувачем реалізована у функції main, всі print та input відбуваються тільки там
 def bot_commander(command):
-    # book.load_from_file('address_book.txt')
-    # bot_helper = True
-    # while bot_helper:
-    #command = input("Enter a command [add/change/phone/birthday/show all/search] and info for the notebook: ").lower()
     command_lower = command.lower()
     block = command_lower.split()
     if block[0] == 'hello':
@@ -171,22 +123,6 @@ def bot_commander(command):
             result = show_phone(name)
             #print(result)
             return result
-        # elif block[0] == 'birthday':
-        #     if len(block) < 3:
-        #         print('Name or birthday are missing')
-        #     else:
-        #         name = block[1]
-        #         birthday = block[2]
-        #         # result = contact_bday(name, birthday)
-        #         # print(result)
-        #         try:
-        #             bday = datetime.strptime(birthday, '%Y-%m-%d').date()
-        #             birthday_day= Birthday(bday)
-        #             result = contact_bday(name, birthday_day)
-        #             print(result)
-        #             return result
-        #         except ValueError:
-        #             print('Incorrect format, should be YYYY-MM-DD')
     elif block[0] == 'search':
         if len(block) < 2:
             print('Name or phone number are missing')
@@ -204,10 +140,8 @@ def bot_commander(command):
         closing()
     else:
         print("Don't understand the command. Please, try again!")
-    # book.save_to_file(book, 'address_book.txt')
 
-
-def main():
+def main(): # зберігання/завантаження даних по результатам взаємодії з ботом
     print('Welcome!') 
     load_from_file('adress_book.txt') 
     while True:
