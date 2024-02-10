@@ -1,6 +1,5 @@
 from collections import UserDict
-from datetime import datetime
-import pickle
+from datetime import datetime, date
 
 class Field:
     def __init__(self, value):
@@ -69,12 +68,14 @@ class Birthday(Field):
             raise ValueError("Wrong format, date of birth should be YYYY-MM-DD")
 
     def validate(self, value):  # _bday_valid 
-        try:
-            datetime.strptime(value, '%Y-%m-%d')
-            return True
-        except ValueError:
-            return False
-    
+        if isinstance(value, date):
+            try:
+                datetime(value.year, value.month, value.day)
+                return True
+            except ValueError:
+                return False
+        return False
+        
     def days_to_birthday(self):
         today = datetime.now()
         bday_date = datetime.strptime(self.value, '%Y-%m-%d')
@@ -108,45 +109,18 @@ class Record:
                 phone.value = new_phone
                 return       
         raise ValueError(f'{old_phone} not exist')
-
-    def find_phone(self, phone_number):
-        for phone in self.phones:
-            if phone.value == phone_number:
-                return phone
-        return None
-    
+        
     def days_to_birthday(self):
         if self.birthday:
             return self.birthday.days_to_birthday()
         return None
-
-    def __str__(self):
-        return f"Contact name: {self.name.value}, phones: {'; '.join(phone.value for phone in self.phones)}"
-
+        
 class AddressBook(UserDict):
     def iterator(self, N):
         records = list(self.data.values())
         for i in range(0, len(records), N):
             yield records[i:i+N]
-
-    def save_to_file(self, some_file):
-        with open(some_file, 'wb') as file:
-            pickle.dump(self.data, file)
-
-    def load_from_file(self, some_file):
-        try:
-            with open(some_file, 'rb') as file:
-                self.data = pickle.load(file)
-        except FileNotFoundError:
-            print("File not exist. Should creat a new address book.")
-
-    def searching(self, some_info):
-        result = []
-        for record in self.data.values():
-            if some_info in record.name.value or any(some_info in phone.value for phone in record.phones):
-                result.append(record)
-        return result
-
+            
     def add_record(self, record): 
         self.data[record.name.value] = record
 
@@ -157,8 +131,3 @@ class AddressBook(UserDict):
     def delete(self, name):
         if name in self.data:
             del self.data[name]
-
-if __name__ == '__main__':
-    book = AddressBook()
-    book.save_to_file('address_book.txt')
-    book.load_from_file('address_book.txt')
