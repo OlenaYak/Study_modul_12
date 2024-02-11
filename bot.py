@@ -148,7 +148,7 @@ def main(): # зберігання/завантаження даних по ре
         command = input("Enter a command [add/change/phone/show all/search] and info for the notebook: ")
         result = bot_commander(command)
         print(result)
-        save_to_file('address_book.txt')
+        save_to_file('adress_book.txt')
 
 if __name__ == "__main__":
     main()
